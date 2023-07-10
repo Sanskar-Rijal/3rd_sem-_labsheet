@@ -4,7 +4,7 @@
 // members that hold the temperature value and make conversion functions in each
 // class for conversion from one to another. For example, you need to have a
 // function toFahrenheit() in class Celsius that converts to Fahrenheit scale
-// and returns the value.
+// and returns the value
 
 #include <iostream>
 
