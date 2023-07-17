@@ -1,135 +1,74 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <cmath>
-
+/*Write a program that has a class to represent time.
+The class should have constructors to initialize data members hour, minute, and second to 0 and to initialize them to 
+values passed as arguments.
+The class should have a member function to add time objects and return the result as a time object.
+There should be functions to display time in 12-hour and 24-hour format.*/
+#include<iostream>
 using namespace std;
-
-// Structure to represent a node in the graph
-struct Node {
-    int x, y;      // Coordinates of the node
-    int g, h, f;   // Cost values for path calculation
-    vector<Node*> neighbors;
-    Node* parent;
-
-    Node(int x, int y) : x(x), y(y), g(0), h(0), f(0), parent(nullptr) {}
-
-    // Calculate the heuristic value (Euclidean distance) to the goal node
-    void calculateHeuristic(Node* goal) {
-        h = sqrt(pow((x - goal->x), 2) + pow((y - goal->y), 2));
+class timett
+{
+    int hour;
+    int minute;
+    int second;
+    public:
+    timett()
+    {
+        hour=0;
+        minute=0;
+        second=0;
     }
-
-    // Calculate the cost from the start node to this node
-    void calculateCost(Node* start) {
-        if (start != nullptr)
-            g = start->g + 1;  // Assuming uniform edge costs of 1
+    timett(int hour,int minute,int second)
+    {
+        this->hour=hour;
+        this->minute=minute;
+        this->second=second;
     }
-
-    // Calculate the total cost (f = g + h)
-    void calculateTotalCost() {
-        f = g + h;
-    }
-};
-
-// Custom comparator for the priority queue
-struct CompareNodes {
-    bool operator()(const Node* lhs, const Node* rhs) const {
-        return lhs->f > rhs->f;
-    }
-};
-
-// A* algorithm to find the shortest path
-vector<Node*> AStar(Node* start, Node* goal) {
-    priority_queue<Node*, vector<Node*>, CompareNodes> openSet;
-    vector<Node*> closedSet;
-
-    start->calculateHeuristic(goal);
-    start->calculateCost(nullptr);
-    start->calculateTotalCost();
-
-    openSet.push(start);
-
-    while (!openSet.empty()) {
-        Node* current = openSet.top();
-        openSet.pop();
-
-        if (current == goal) {
-            // Goal reached, construct the path
-            vector<Node*> path;
-            Node* node = current;
-            while (node != nullptr) {
-                path.push_back(node);
-                node = node->parent;
-            }
-            reverse(path.begin(), path.end());
-            return path;
+        timett add(timett& a, timett &b)
+    {
+        timett c;
+        c.hour=a.hour+b.hour;
+        c.minute=a.minute+b.minute;
+        c.second=a.second+b.second;
+        while(c.second>=60)
+        {
+            c.second-=60;
+            c.minute++;
         }
-
-        closedSet.push_back(current);
-
-        for (Node* neighbor : current->neighbors) {
-            if (find(closedSet.begin(), closedSet.end(), neighbor) != closedSet.end())
-                continue;  // Ignore already visited nodes
-
-            neighbor->calculateCost(current);
-            neighbor->calculateHeuristic(goal);
-            neighbor->calculateTotalCost();
-
-            auto openSetIterator = find(openSet.begin(), openSet.end(), neighbor);
-            if (openSetIterator == openSet.end()) {
-                // Add to open set if not already present
-                openSet.push(neighbor);
-                neighbor->parent = current;
-            } else {
-                // Update cost and parent if a better path is found
-                if (neighbor->g < (*openSetIterator)->g) {
-                    (*openSetIterator)->g = neighbor->g;
-                    (*openSetIterator)->parent = current;
-                }
-            }
+        while(c.minute>=60)
+        {
+            c.minute-=60;
+            c.hour++;
         }
+        return c;
     }
-
-    // No path found
-    return vector<Node*>();
+    void displayin12();
+    void displayin24();
+};
+void timett::displayin12()
+{
+    if(hour>12)
+    {
+        hour-=12;
+        cout<<"the time in 12 hour format is"<<endl;
+        cout<<hour<<":"<<minute<<":"<<second<<"am"<<endl;
+    }
 }
-
-int main() {
-    // Create the graph
-    Node* start = new Node(0, 0);
-    Node* goal = new Node(5, 5);
-    Node* node1 = new Node(1, 1);
-    Node* node2 = new Node(2, 2);
-    Node* node3 = new Node(3, 3);
-    Node* node4 = new Node(4, 4);
-
-    // Set up the neighbors
-    start->neighbors = { node1 };
-    node1->neighbors = { node2, node3 };
-    node2->neighbors = { node4 };
-    node3->neighbors = { goal };
-    node4->neighbors = { goal };
-
-    // Run A* algorithm
-    vector<Node*> path = AStar(start, goal);
-
-    // Print the path
-    if (!path.empty()) {
-        for (Node* node : path) {
-            cout << "(" << node->x << ", " << node->y << ") ";
-        }
-        cout << endl;
-    } else {
-        cout << "No path found!" << endl;
-    }
-
-    // Clean up memory
-    delete start;
-    delete goal;
-    delete node1;
-    delete node2;
-    delete node3;
-    delete node4;
-
+void timett::displayin24()
+{
+        cout<<"the time in 24 hour format is"<<endl;
+        cout<<hour<<":"<<minute<<":"<<second<<"pm"<<endl;
+}
+int main()
+{
+    int hour,minute,second;
+    cout<<"enter time in hour,minute and second";
+    cin>>hour>>minute>>second;
+    timett t1(hour,minute,second);
+     cout<<"enter time in hour,minute and second";
+    cin>>hour>>minute>>second;
+    timett t2(hour,minute,second);
+    timett t3=t3.add(t1,t2);
+    t3.displayin24();
+    t3.displayin12();
     return 0;
 }
