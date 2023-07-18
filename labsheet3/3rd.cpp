@@ -6,6 +6,7 @@ Your program should be made such that it should show the order of constructor an
 using namespace std;
 class store
 {
+    static unsigned int count;
     int dep_id;
     string dep_name;
     public:
@@ -25,9 +26,11 @@ class store
     }
     ~store()
     {
-        cout<<"destructor is called"<<endl;
+        count++;
+        cout<<"destructor is called "<<count<<endl;
     }
 };
+unsigned int store::count = 0;
 int main()
 {
     store s,s1(1232,"sanskar");
